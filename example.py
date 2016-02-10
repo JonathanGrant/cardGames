@@ -14,7 +14,14 @@ class Card:
     
     def printCard(self):
         if self.number > 10:
-            print self.number, " of ", self.suit
+            if self.number == J:
+                print "Jack of ", self.suit
+            elif self.number == Q:
+                print "Queen of ", self.suit
+            elif self.number == K:
+                print "King of ", self.suit
+            else:
+                print "Card number not understood. ", self.number
         else:
             print self.number, " of ", self.suit
         
