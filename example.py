@@ -59,9 +59,12 @@ class Player:
             
     def sortHand(self):
         self.hand.sort(key=operator.attrgetter('number'))
+        
+    def addCards(self, newCards):
+        for card in newCards:
+            self.hand.append(card)
             
-    
-#class WarPlayer(Player):
-plr = Player([Card(2, "Spades"), Card(7, "Hearts"), Card(5, "Spades")])
-plr.sortHand()
-plr.printHand()
+class WarPlayer(Player):
+    def playCard(self):
+        #returns the top card
+        return self.hand.pop()
