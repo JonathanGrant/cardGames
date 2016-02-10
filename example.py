@@ -41,9 +41,17 @@ class Deck:
     def printDeck(self):
         for card in self.cards:
             card.printCard()
+    
+    def peakTopCard(self):
+        self.cards[-1].printCard()
+        
+    def takeTopCard(self):
+        return self.cards.pop()
 
 print "Creating Deck"
 myDeck = Deck([2,3,4,5,6,7,8,9,10,J,Q,K],["Spades","Diamonds","Hearts","Clubs"])
 myDeck.printDeck()
 myDeck.shuffle()
 myDeck.printDeck()
+myDeck.peakTopCard()
+myDeck.takeTopCard().printCard()
