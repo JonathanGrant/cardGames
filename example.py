@@ -1,3 +1,4 @@
+import operator
 import random
 
 J = 11
@@ -48,10 +49,19 @@ class Deck:
     def takeTopCard(self):
         return self.cards.pop()
 
-print "Creating Deck"
-myDeck = Deck([2,3,4,5,6,7,8,9,10,J,Q,K],["Spades","Diamonds","Hearts","Clubs"])
-myDeck.printDeck()
-myDeck.shuffle()
-myDeck.printDeck()
-myDeck.peakTopCard()
-myDeck.takeTopCard().printCard()
+class Player:
+    def __init__(self, hand):
+        self.hand = hand
+    
+    def printHand(self):
+        for card in self.hand:
+            card.printCard()
+            
+    def sortHand(self):
+        self.hand.sort(key=operator.attrgetter('number'))
+            
+    
+#class WarPlayer(Player):
+plr = Player([Card(2, "Spades"), Card(7, "Hearts"), Card(5, "Spades")])
+plr.sortHand()
+plr.printHand()
