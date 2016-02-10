@@ -4,6 +4,7 @@ import random
 J = 11
 Q = 12
 K = 13
+A = 14
 
 class Card:
     cardCount = 0
@@ -21,6 +22,8 @@ class Card:
                 print "Queen of ", self.suit
             elif self.number == K:
                 print "King of ", self.suit
+            elif self.number == A:
+                print "Ace of ", self.suit
             else:
                 print "Card number not understood. ", self.number
         else:
@@ -36,7 +39,7 @@ class Deck:
             for j in suitList:
                 self.cards.append(Card(i,j))
     
-    def shuffle(self):
+    def shuffleDeck(self):
         random.shuffle(self.cards)
         
     def printDeck(self):
@@ -68,3 +71,18 @@ class WarPlayer(Player):
     def playCard(self):
         #returns the top card
         return self.hand.pop()
+    
+class Game:
+    def __init__(self):
+        print "Game Created"
+    
+    def createStandardShuffledDeck(self):
+        d = Deck([2,3,4,5,6,7,8,9,10,J,Q,K,A],["Hearts","Clubs","Diamonds","Spades"])
+        d.shuffleDeck()
+        return d
+    
+class WarGame(Game):
+    def __init__(self):
+        self.deck = Game.createStandardShuffledDeck(self)
+
+print WarGame().deck
