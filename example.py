@@ -1,5 +1,9 @@
 import random
 
+J = 11
+Q = 12
+K = 13
+
 class Card:
     cardCount = 0
     
@@ -10,9 +14,9 @@ class Card:
     
     def printCard(self):
         if self.number > 10:
-            print("%i of %s."%{self.number, self.suit})
+            print self.number, " of ", self.suit
         else:
-            print("%i of %s."%{self.number, self.suit})
+            print self.number, " of ", self.suit
         
 class Deck:
     def __init__(self, cardList, suitList):
@@ -30,3 +34,9 @@ class Deck:
     def printDeck(self):
         for card in self.cards:
             card.printCard()
+
+print "Creating Deck"
+myDeck = Deck([2,3,4,5,6,7,8,9,10,J,Q,K],["Spades","Diamonds","Hearts","Clubs"])
+myDeck.printDeck()
+myDeck.shuffle()
+myDeck.printDeck()
