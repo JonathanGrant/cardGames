@@ -159,7 +159,8 @@ class WarGame(Game):
                 for player in self.players:
                     player.shuffleHand()
         
-playerOne = HumanWarPlayer("Jonathan",[])
+playerOne = HumanWarPlayer("Jonathan Grant",[])
 playerTwo = WarPlayer("Count Dooku",[])
-w = WarGame([playerOne, playerTwo])
+playerThree = WarPlayer("Anakin Skywalker",[])
+w = WarGame([playerOne, playerTwo, playerThree])
 w.runGame(True)
