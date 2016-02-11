@@ -145,11 +145,11 @@ class WarGame(Game):
             winner = roundsCards[0]
             index = 0
             for i in range(1,len(roundsCards)):
-                if roundsCards[i] > winner:
+                if roundsCards[i].number > winner.number:
                     index = i
                     winner = roundsCards[i]
                     isTie = False
-                elif roundsCards[i] == winner:
+                elif roundsCards[i].number == winner.number:
                     isTie = True
             if isTie:
                 print "Tie! The cards are deleted."
