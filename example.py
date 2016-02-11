@@ -160,7 +160,7 @@ class WarGame(Game):
                 print "Tie! The cards are shared."
                 while not stop:
                     for index in winningPlayers:
-                        if not roundsCards:
+                        if len(roundsCards) > 0:
                             self.players[index].addCard(roundsCards.pop())
                         else:
                             stop = True
