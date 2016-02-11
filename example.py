@@ -78,6 +78,9 @@ class Player:
         
     def shuffleHand(self):
         random.shuffle(self.hand)
+        
+    def outOfCards(self):
+        return not self.hand
             
 class WarPlayer(Player):
     def playCard(self):
@@ -114,20 +117,22 @@ class WarGame(Game):
                 if not self.deck.isEmpty():
                     player.addCard(self.deck.takeTopCard())
                     
-    def isGameOver(self):
+    def isGameOver(self, playTilEnd):
+        if playTilEnd and len(self.players) == 1:
+            return True
         for player in self.players:
             if not player.hand:
                 return True
         return False
     
-    def runGame(self, shuffleAfterEveryRound):
+    def runGame(self, shuffleAfterEveryRound, playTilEnd):
         print "Starting War Game!"
         print "Dealing cards"
         self.dealCards()
         print "Cards are dealt"
         print "Starting Game"
         roundNumber = 1
-        while(not self.isGameOver()):
+        while(not self.isGameOver(playTilEnd)):
             print "Starting Round ", roundNumber
             roundsCards = []
             for player in self.players:
@@ -158,9 +163,16 @@ class WarGame(Game):
             if shuffleAfterEveryRound:
                 for player in self.players:
                     player.shuffleHand()
+            if playTilEnd:
+                for player in self.players:
+                    if player.outOfCards():
+                        print player.name, " has lost!"
+                        self.players.remove(player)
+        if playTilEnd:
+            print self.players[0].name, " is the winner!"
         
 playerOne = HumanWarPlayer("Jonathan Grant",[])
 playerTwo = WarPlayer("Count Dooku",[])
 playerThree = WarPlayer("Anakin Skywalker",[])
 w = WarGame([playerOne, playerTwo, playerThree])
-w.runGame(True)
+w.runGame(True, True)
