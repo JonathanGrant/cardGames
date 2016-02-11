@@ -98,6 +98,9 @@ class HumanWarPlayer(WarPlayer):
 class Game:
     def __init__(self):
         print "Game Created"
+        self.graveyard = []
+        self.deck = []
+        self.players = []
     
     def createStandardShuffledDeck(self):
         d = Deck([2,3,4,5,6,7,8,9,10,J,Q,K,A],["Hearts","Clubs","Diamonds","Spades"])
@@ -108,14 +111,15 @@ class WarGame(Game):
     def __init__(self, players):
         self.deck = Game.createStandardShuffledDeck(self)
         self.players = players
-        self.graveyard = []
     
     def dealCards(self):
         #Iterate through shuffled deck one card at a time and hand them to the players
-        for num in range(self.deck.numCards() / len(self.players)): #extra cards are dealt this way
+        for num in range(self.deck.numCards()): #extra cards are dealt this way
             for player in self.players:
                 if not self.deck.isEmpty():
                     player.addCard(self.deck.takeTopCard())
+                else:
+                    return
                     
     def isGameOver(self, playTilEnd):
         if playTilEnd and len(self.players) == 1:
@@ -141,20 +145,26 @@ class WarGame(Game):
                 print player.name, " played a "
                 card.printCard()
                 roundsCards.append(card)
-            isTie = False
+            winningPlayers = [0]
             winner = roundsCards[0]
             index = 0
             for i in range(1,len(roundsCards)):
                 if roundsCards[i].number > winner.number:
                     index = i
                     winner = roundsCards[i]
-                    isTie = False
+                    winningPlayers = [i]
                 elif roundsCards[i].number == winner.number:
-                    isTie = True
-            if isTie:
-                print "Tie! The cards are deleted."
-                for card in roundsCards:
-                    self.graveyard.append(card)
+                    winningPlayers.append(i)
+            if len(winningPlayers)>1:
+                stop = False
+                print "Tie! The cards are shared."
+                while not stop:
+                    for index in winningPlayers:
+                        if not roundsCards:
+                            self.players[index].addCard(roundsCards.pop())
+                        else:
+                            stop = True
+                            break
             else:
                 print "Player ", self.players[index].name, " won!"
                 for card in roundsCards:
