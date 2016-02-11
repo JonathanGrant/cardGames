@@ -59,8 +59,12 @@ class Deck:
         return len(self.cards)
 
 class Player:
-    def __init__(self, hand):
+    def __init__(self, name, hand):
         self.hand = hand
+        self.name = name
+    
+    def printName(self):
+        print self.name
     
     def printHand(self):
         for card in self.hand:
@@ -69,14 +73,24 @@ class Player:
     def sortHand(self):
         self.hand.sort(key=operator.attrgetter('number'))
         
-    def addCards(self, newCards):
-        for card in newCards:
-            self.hand.append(card)
+    def addCard(self, newCard):
+        self.hand.insert(0, newCard)
+        
+    def shuffleHand(self):
+        random.shuffle(self.hand)
             
 class WarPlayer(Player):
     def playCard(self):
         #returns the top card
         return self.hand.pop()
+    
+    def takeTurn(self):
+        return self.playCard()
+
+class HumanWarPlayer(WarPlayer):
+    def takeTurn(self):
+        raw_input("Press Enter to make turn")
+        return self.playCard()
     
 class Game:
     def __init__(self):
@@ -91,28 +105,61 @@ class WarGame(Game):
     def __init__(self, players):
         self.deck = Game.createStandardShuffledDeck(self)
         self.players = players
+        self.graveyard = []
     
     def dealCards(self):
         #Iterate through shuffled deck one card at a time and hand them to the players
         for num in range(self.deck.numCards() / len(self.players)): #extra cards are dealt this way
             for player in self.players:
                 if not self.deck.isEmpty():
-                    player.addCards([self.deck.takeTopCard()])
+                    player.addCard(self.deck.takeTopCard())
+                    
+    def isGameOver(self):
+        for player in self.players:
+            if not player.hand:
+                return True
+        return False
     
-    def runGame(self):
+    def runGame(self, shuffleAfterEveryRound):
         print "Starting War Game!"
         print "Dealing cards"
         self.dealCards()
         print "Cards are dealt"
         print "Starting Game"
-        won = False
         roundNumber = 1
-        while(not won):
+        while(not self.isGameOver()):
             print "Starting Round ", roundNumber
+            roundsCards = []
             for player in self.players:
-                
+                print player.name, " is starting his or her turn with ", len(player.hand), " cards."
+                card = player.takeTurn()
+                print player.name, " played a "
+                card.printCard()
+                roundsCards.append(card)
+            isTie = False
+            winner = roundsCards[0]
+            index = 0
+            for i in range(1,len(roundsCards)):
+                if roundsCards[i] > winner:
+                    index = i
+                    winner = roundsCards[i]
+                    isTie = False
+                elif roundsCards[i] == winner:
+                    isTie = True
+            if isTie:
+                print "Tie! The cards are deleted."
+                for card in roundsCards:
+                    self.graveyard.append(card)
+            else:
+                print "Player ", self.players[index].name, " won!"
+                for card in roundsCards:
+                    self.players[index].addCard(card)
+            roundNumber+=1
+            if shuffleAfterEveryRound:
+                for player in self.players:
+                    player.shuffleHand()
         
-playerOne = WarPlayer([])
-playerTwo = WarPlayer([])
+playerOne = HumanWarPlayer("Jonathan",[])
+playerTwo = WarPlayer("Count Dooku",[])
 w = WarGame([playerOne, playerTwo])
-w.runGame()
+w.runGame(True)
