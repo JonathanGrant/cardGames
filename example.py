@@ -51,6 +51,12 @@ class Deck:
         
     def takeTopCard(self):
         return self.cards.pop()
+    
+    def isEmpty(self):
+        return (not self.cards)
+    
+    def numCards(self):
+        return len(self.cards)
 
 class Player:
     def __init__(self, hand):
@@ -82,7 +88,31 @@ class Game:
         return d
     
 class WarGame(Game):
-    def __init__(self):
+    def __init__(self, players):
         self.deck = Game.createStandardShuffledDeck(self)
-
-print WarGame().deck
+        self.players = players
+    
+    def dealCards(self):
+        #Iterate through shuffled deck one card at a time and hand them to the players
+        for num in range(self.deck.numCards() / len(self.players)): #extra cards are dealt this way
+            for player in self.players:
+                if not self.deck.isEmpty():
+                    player.addCards([self.deck.takeTopCard()])
+    
+    def runGame(self):
+        print "Starting War Game!"
+        print "Dealing cards"
+        self.dealCards()
+        print "Cards are dealt"
+        print "Starting Game"
+        won = False
+        roundNumber = 1
+        while(not won):
+            print "Starting Round ", roundNumber
+            for player in self.players:
+                
+        
+playerOne = WarPlayer([])
+playerTwo = WarPlayer([])
+w = WarGame([playerOne, playerTwo])
+w.runGame()
