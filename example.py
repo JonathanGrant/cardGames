@@ -83,14 +83,25 @@ class Player:
         return not self.hand
 
 class GoFishPlayer(Player):
-    def gotAny(self, number):
-        cardsToGive = []
-        for card in self.hand:
-            if card.number == number:
-                cardsToGive.append(card)
+    def giveAllCardsWithNumber(self, number):
+        cardsToGive = [card for card in self.hand if card.number == number]
         for card in cardsToGive:
             self.hand.remove(card)
         return cardsToGive
+    
+    def gimmeTheFours(self):
+        for card in self.hand:
+            if len([x for x in self.hand if x.number == card.number]) == 4:
+                return self.giveAllCardsWithNumber(card.number)
+        return None
+    
+    def gimmeAllFours(self):
+        allFours = []
+        fours = self.gimmeTheFours()
+        while (fours):
+            allFours.append(fours)
+            fours = self.gimmeTheFours()
+        return allFours
             
 class HumanGoFishPlayer(GoFishPlayer):
     def chooseCard(self):
@@ -100,6 +111,16 @@ class HumanGoFishPlayer(GoFishPlayer):
         num = 0
         while(not any(card.number == num for card in self.hand)):
             num = int(raw_input("Enter card number: "))
+        return num
+    
+class RobotGoFishPlayer(GoFishPlayer):
+    def chooseCard(self):
+        max = [0,0]
+        for card in self.hand:
+            num = len([x for x in self.hand if x.number == card.number])
+            if num > max[0]:
+                max = [num, card.number]
+        return max[1]
             
 class WarPlayer(Player):
     def playCard(self):
@@ -230,6 +251,11 @@ class GoFishGame(Game):
         print "Starting Game"
         while(not self.isGameOver(playTilEnd)):
             for player in self.players:
-                player.
-            
-            
+                number = player.chooseCard()
+                #playerToAsk = player.choosePlayer(number)
+                if len(self.players) == 2:
+                    playerToAsk = 0
+                    if self.players[0] == player:
+                        playerToAsk = 1
+                    cards = self.players[playerToAsk]
+                    
