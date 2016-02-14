@@ -189,7 +189,7 @@ while(numberPlayers < 2 or numberPlayers > 4) :
 		if(numberPlayers < 2 or numberPlayers > 4): 
 			print "Error: The game cannot be played for", numberPlayers, "player(s)"
 	except (ValueError, NameError):
-		print "Error: Not a number"
+		print "Error: Not a number!"
 print "\n"
 
 name = raw_input("What is your name? ")
