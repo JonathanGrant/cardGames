@@ -137,7 +137,7 @@ class WarGame(Game):
         print "Starting Game"
         roundNumber = 1
         while(not self.isGameOver(playTilEnd)):
-            print "Starting Round ", roundNumber
+            print "\nStarting Round ", roundNumber
             roundsCards = []
             for player in self.players:
                 print player.name, " is starting his or her turn with ", len(player.hand), " cards."
@@ -181,8 +181,27 @@ class WarGame(Game):
         if playTilEnd:
             print self.players[0].name, " is the winner!"
         
-playerOne = HumanWarPlayer("Jonathan Grant",[])
+numberPlayers = 0
+while(numberPlayers < 2 or numberPlayers > 4) :
+	try:
+		str = input("How many will be playing? 2, 3, or 4\n")
+		numberPlayers = str
+		if(numberPlayers < 2 or numberPlayers > 4): 
+			print "Error: The game cannot be played for", numberPlayers, "player(s)"
+	except (ValueError, NameError):
+		print "Error: Not a number"
+print "\n"
+
+name = raw_input("What is your name? ")
+
+playerOne = HumanWarPlayer(name,[])
 playerTwo = WarPlayer("Count Dooku",[])
 playerThree = WarPlayer("Anakin Skywalker",[])
-w = WarGame([playerOne, playerTwo, playerThree])
+playerFour = WarPlayer("Kylo Ren",[])
+
+w = WarGame([playerOne, playerTwo])
+if (numberPlayers is 3):
+	w = WarGame([playerOne, playerTwo, playerThree])
+elif (numberPlayers is 4):
+	w = WarGame([playerOne, playerTwo, playerThree, playerFour])
 w.runGame(True, True)
