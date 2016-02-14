@@ -81,6 +81,25 @@ class Player:
         
     def outOfCards(self):
         return not self.hand
+
+class GoFishPlayer(Player):
+    def gotAny(self, number):
+        cardsToGive = []
+        for card in self.hand:
+            if card.number == number:
+                cardsToGive.append(card)
+        for card in cardsToGive:
+            self.hand.remove(card)
+        return cardsToGive
+            
+class HumanGoFishPlayer(GoFishPlayer):
+    def chooseCard(self):
+        self.sortHand()
+        print "Choose a card to ask about. You have: "
+        self.printHand()
+        num = 0
+        while(not any(card.number == num for card in self.hand)):
+            num = int(raw_input("Enter card number: "))
             
 class WarPlayer(Player):
     def playCard(self):
@@ -181,8 +200,36 @@ class WarGame(Game):
         if playTilEnd:
             print self.players[0].name, " is the winner!"
         
-playerOne = HumanWarPlayer("Jonathan Grant",[])
-playerTwo = WarPlayer("Count Dooku",[])
-playerThree = WarPlayer("Anakin Skywalker",[])
-w = WarGame([playerOne, playerTwo, playerThree])
-w.runGame(True, True)
+class GoFishGame(Game):
+    def __init__(self, players):
+        self.deck = Game.createStandardShuffledDeck(self)
+        self.players = players
+    
+    def dealCards(self):
+        #Iterate through shuffled deck one card at a time and hand 5 to the players
+        for num in range(5): #extra cards are dealt this way
+            for player in self.players:
+                if not self.deck.isEmpty():
+                    player.addCard(self.deck.takeTopCard())
+                else:
+                    return
+                
+    def isGameOver(self, playTilEnd):
+        if playTilEnd and len(self.players) == 1:
+            return True
+        for player in self.players:
+            if not player.hand:
+                return True
+        return False
+                
+    def runGame(self, playTilEnd):
+        print "Starting Go Fish!"
+        print "Dealing cards"
+        self.dealCards()
+        print "Cards are dealt"
+        print "Starting Game"
+        while(not self.isGameOver(playTilEnd)):
+            for player in self.players:
+                player.
+            
+            
