@@ -249,13 +249,25 @@ class GoFishGame(Game):
         self.dealCards()
         print "Cards are dealt"
         print "Starting Game"
+        #Add check for fours right before game starts
         while(not self.isGameOver(playTilEnd)):
             for player in self.players:
-                number = player.chooseCard()
-                #playerToAsk = player.choosePlayer(number)
-                if len(self.players) == 2:
-                    playerToAsk = 0
-                    if self.players[0] == player:
-                        playerToAsk = 1
-                    cards = self.players[playerToAsk]
-                    
+                won = True
+                while won:
+                    number = player.chooseCard()
+                    #playerToAsk = player.choosePlayer(number)
+                    if len(self.players) == 2:
+                        playerToAsk = 0
+                        if self.players[0] == player:
+                            playerToAsk = 1
+                        print player.name, " asked ", self.players[playerToAsk].name, " got any ", number, "'s?"
+                        cards = self.players[playerToAsk].gotAny(number)
+                        if cards:
+                            print self.players[playerToAsk].name, ": Yup!"
+                            for card in cards:
+                                player.hand.append(card)
+                                player.hand.sort()
+                                #Check if we have four now
+                        else:
+                            print self.players[playerToAsk].name, ": Go Fish!"
+                            won = False
