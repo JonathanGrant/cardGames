@@ -376,6 +376,7 @@ class GoFishGame(Game):
         self.donePlayers = []
         while(not self.isGameOver(playTilEnd)):
             for player in self.players:
+                print self.donePlayers, " Done players"
                 self.outOfCardsCheck()
                 if player in self.donePlayers:
                     pass
@@ -405,7 +406,11 @@ class GoFishGame(Game):
                             print "But there are no cards left!"
                         won = False
                     self.outOfCardsCheck()
-            self.gameOver()
+                if len(self.players) == len(self.donePlayers):
+                    break
+            if len(self.players) == len(self.donePlayers):
+                break
+        self.gameOver()
 
 #Test!
 #Create 2 human players only
