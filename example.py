@@ -304,6 +304,7 @@ class GoFishGame(Game):
     def __init__(self, players):
         self.deck = Game.createStandardShuffledDeck(self)
         self.players = players
+        self.books = []
     
     def dealCards(self):
         #Iterate through shuffled deck one card at a time and hand 5 to the players
@@ -314,15 +315,27 @@ class GoFishGame(Game):
                 else:
                     return
                 
+    #playTilEnd: Game is over when all but 1 players have no cards
+    #else: Game is over when just 1 player has no cards
     def isGameOver(self, playTilEnd):
-        if playTilEnd and len(self.players) == 1:
-            return True
         for player in self.players:
             if not player.hand:
-                return True
+                self.winners.append(player)
+                if not playTilEnd:
+                    return True
+        if playTilEnd and len(self.players) == 1:
+            return True
         return False
+    
+    def checkAllPlayersForBooks(self):
+        for player in self.players:
+            fours = player.gimmeAllFours()
+            if len(fours) > 0:
+                self.books.append(fours) #it might not be append but the other command I can't remember right now
+                print player.name, "has", len(fours), "books, and has placed them down on the table."
                 
     def runGame(self, playTilEnd):
+        self.winners = []
         print "Starting Go Fish!"
         print "Dealing cards"
         self.dealCards()
@@ -332,7 +345,7 @@ class GoFishGame(Game):
         while(not self.isGameOver(playTilEnd)):
             for player in self.players:
                 won = True
-                while won:
+                while won and not self.isGameOver(playTilEnd):
                     number, playerToAsk = player.chooseCardAndPlayer(self.players)
                     print player.name, " asked ", self.players[playerToAsk].name, "got any ", number, "'s?"
                     cards = self.players[playerToAsk].giveAllCardsWithNumber(number)
@@ -343,12 +356,21 @@ class GoFishGame(Game):
                             player.hand.append(card)
                             player.hand.sort()
                             #Check if we have four now
+                            self.checkAllPlayersForBooks()
                     else:
                         print self.players[playerToAsk].name, ": Go Fish!"
                         newCard = self.deck.takeTopCard()
                         player.hand.append(newCard)
                         print player.name, "picked up a", newCard.number, "of", newCard.suit
+                        self.checkAllPlayersForBooks()
                         won = False
+                    if player.outOfCards():
+                        print player.name, "is out of cards!"
+                        self.players.remove(player)
+        print "Game Over!"
+        print "The winners are: "
+        for i in range(len(self.winners)):
+            print i+1, self.winners[i].name
 
 #Test!
 #Create 2 human players only
