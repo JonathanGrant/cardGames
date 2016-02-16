@@ -158,7 +158,9 @@ class RobotGoFishPlayer(GoFishPlayer):
         for num in range(1,A):
             predictionCards.append(PredictionCardForGoFish(num, players))
     
-    def __init__(self, isEasy):
+    def __init__(self, name, hand, isEasy):
+        self.name = name
+        self.hand = hand
         self.isEasy = isEasy
         
     #This method will be called after every single turn
@@ -181,7 +183,7 @@ class RobotGoFishPlayer(GoFishPlayer):
             playerNum = random.randint(0, len(players) - 1)
             while players[playerNum] == self:
                 playerNum = random.randint(0, len(players) - 1)
-            return max[1], players[playerNum]
+            return max[1], playerNum
         else:
             #What is my player index?
             myIndex = 0
@@ -197,7 +199,7 @@ class RobotGoFishPlayer(GoFishPlayer):
                     index, value = predictionCards.getMaxPlayerScore(myIndex)
                     if maxScore[2] < value:
                         maxScore = [number, index, value]
-            return maxScore[0], players[maxScore[1]]
+            return maxScore[0], maxScore[1]
             
 class WarPlayer(Player):
     def playCard(self):
@@ -351,6 +353,6 @@ class GoFishGame(Game):
 #Test!
 #Create 2 human players only
 playerOne = HumanGoFishPlayer("Skywalker", [])
-playerTwo = HumanGoFishPlayer("Obi-Wan", [])
+playerTwo = RobotGoFishPlayer("Obi-Wan", [], True)
 game = GoFishGame([playerOne, playerTwo])
 game.runGame(True)
