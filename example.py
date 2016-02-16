@@ -131,7 +131,7 @@ class PredictionCardForGoFish:
         self.number = number
         self.players = players
         self.playerScores = []
-        for num in range(players):
+        for num in (players):
             self.playerScores.append(1)
     
     def setPlayerScore(self, playerIndex, newScore):
@@ -155,9 +155,10 @@ class PredictionCardForGoFish:
 class RobotGoFishPlayer(GoFishPlayer):
     predictionCards = []
     #Must be called once before playable AI
-    def createPredictionCards(self, players):
+    @classmethod
+    def createPredictionCards(cls, players):
         for num in range(1,A):
-            predictionCards.append(PredictionCardForGoFish(num, players))
+            cls.predictionCards.append(PredictionCardForGoFish(num, players))
     
     def __init__(self, name, hand, isEasy):
         self.name = name
@@ -169,10 +170,10 @@ class RobotGoFishPlayer(GoFishPlayer):
     def cardWasAskedFor(self, number, askingPlayerIndex, askedPlayerIndex, playerGaveCount, completedSetFlag):
         if completedSetFlag:
             #Remove card number from predictionCards
-            predictionCards.remove[number - 2]
+            self.predictionCards.remove[number - 2]
         else:
-            predictionCards[number - 2].setPlayerScore(askingPlayerIndex, playerGaveCount + self.getPlayerScore(askingPlayerIndex))
-            predictionCards[number - 2].setPlayerScore(askedPlayerIndex, 0)
+            self.predictionCards[number - 2].setPlayerScore(askingPlayerIndex, playerGaveCount + self.getPlayerScore(askingPlayerIndex))
+            self.predictionCards[number - 2].setPlayerScore(askedPlayerIndex, 0)
         
     def chooseCardAndPlayer(self, players):
         if self.isEasy:
@@ -188,17 +189,16 @@ class RobotGoFishPlayer(GoFishPlayer):
             return max[1], playerNum
         else:
             #What is my player index?
-            myIndex = 0
+            num = 0
             for num in range(0, len(players)):
                 if self == players[num]:
-                    myIndex = num
                     break
             #Find max in predictionCards. if not me, return the number and player
             maxScore = [0, 0, 0]
-            for number in predictionCards:
+            for number in self.predictionCards:
                 #Only want to know if I have the card
                 if len([x for x in self.hand if x.number == number.number]):
-                    index, value = predictionCards.getMaxPlayerScore(myIndex)
+                    index, value = number.getMaxPlayerScore(num)
                     if maxScore[2] < value:
                         maxScore = [number, index, value]
             return maxScore[0], maxScore[1]
@@ -374,6 +374,7 @@ class GoFishGame(Game):
         print "Starting Game"
         #Add check for fours right before game starts
         self.donePlayers = []
+        RobotGoFishPlayer.createPredictionCards(self.players)
         while(not self.isGameOver(playTilEnd)):
             for player in self.players:
                 print self.donePlayers, " Done players"
@@ -415,8 +416,6 @@ class GoFishGame(Game):
 #Test!
 #Create 2 human players only
 playerOne = HumanGoFishPlayer("Skywalker", [])
-playerTwo = RobotGoFishPlayer("Obi-Wan", [], True)
-playerThree = RobotGoFishPlayer("Yoda", [], True)
-playerFour = RobotGoFishPlayer("Dooku", [], True)
-game = GoFishGame([playerOne, playerTwo, playerThree, playerFour])
+playerTwo = RobotGoFishPlayer("Obi-Wan", [], False)
+game = GoFishGame([playerOne, playerTwo])
 game.runGame(True)
