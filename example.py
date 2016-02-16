@@ -200,7 +200,7 @@ class RobotGoFishPlayer(GoFishPlayer):
                 if len([x for x in self.hand if x.number == number.number]):
                     index, value = number.getMaxPlayerScore(num)
                     if maxScore[2] < value:
-                        maxScore = [number, index, value]
+                        maxScore = [number.number, index, value]
             return maxScore[0], maxScore[1]
             
 class WarPlayer(Player):
