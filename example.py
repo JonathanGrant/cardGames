@@ -388,6 +388,7 @@ class GoFishGame(Game):
                                     break
                             print player.name, "picked up", num, "cards."
             for player in playersToRemove:
+                print player, self.players, playersToRemove
                 self.players.remove(player)
                 
                 
