@@ -113,14 +113,85 @@ class HumanGoFishPlayer(GoFishPlayer):
             num = int(raw_input("Enter card number: "))
         return num
     
+class PredictionCardForGoFish:
+    #Player Score:
+    #0 - Player definitely doesn't have the card
+    #1 - Player might have the card
+    #2 - Player definitely has at least 1 of this card
+    #3 - Player definitely has at least 2 of this card
+    #4 - Player definitely has at least 3 of this card
+    def __init__(self, number, players):
+        self.number = number
+        self.players = players
+        self.playerScores = []
+        for num in range(players):
+            self.playerScores.append(1)
+    
+    def setPlayerScore(self, playerIndex, newScore):
+        self.playerScores[playerIndex] = newScore
+        
+    def getPlayerScore(self, playerIndex):
+        return self.playerScores[playerIndex]
+    
+    def getMaxPlayerScore(self, askingPlayerIndex):
+        value = 0
+        index = 0
+        count = 0
+        for score in self.playerScores:
+            if value < score:
+                if count != askingPlayerIndex:
+                    value = score
+                    index = count
+            count += 1
+        return index, value
+    
 class RobotGoFishPlayer(GoFishPlayer):
-    def chooseCard(self):
-        max = [0,0]
-        for card in self.hand:
-            num = len([x for x in self.hand if x.number == card.number])
-            if num > max[0]:
-                max = [num, card.number]
-        return max[1]
+    predictionCards = []
+    #Must be called once before playable AI
+    def createPredictionCards(self, players):
+        for num in range(1,A):
+            predictionCards.append(PredictionCardForGoFish(num, players))
+    
+    def __init__(self, isEasy):
+        self.isEasy = isEasy
+        
+    #This method will be called after every single turn
+    def cardWasAskedFor(self, number, askingPlayerIndex, askedPlayerIndex, playerGaveCount, completedSetFlag):
+        if completedSetFlag:
+            #Remove card number from predictionCards
+            predictionCards.remove[number - 2]
+        else:
+            predictionCards[number - 2].setPlayerScore(askingPlayerIndex, playerGaveCount + self.getPlayerScore(askingPlayerIndex))
+            predictionCards[number - 2].setPlayerScore(askedPlayerIndex, 0)
+        
+    def chooseCardAndPlayer(self, players):
+        if self.isEasy:
+            max = [0,0]
+            for card in self.hand:
+                num = len([x for x in self.hand if x.number == card.number])
+                if num > max[0]:
+                    max = [num, card.number]
+            #Now randomly choose the person to ask
+            playerNum = random.randint(0, len(players) - 1)
+            while players[playerNum] == self:
+                playerNum = random.randint(0, len(players) - 1)
+            return max[1], players[playerNum]
+        else:
+            #What is my player index?
+            myIndex = 0
+            for num in range(0, len(players)):
+                if self == players[num]:
+                    myIndex = num
+                    break
+            #Find max in predictionCards. if not me, return the number and player
+            maxScore = [0, 0, 0]
+            for number in predictionCards:
+                #Only want to know if I have the card
+                if len([x for x in self.hand if x.number == number.number]):
+                    index, value = predictionCards.getMaxPlayerScore(myIndex)
+                    if maxScore[2] < value:
+                        maxScore = [number, index, value]
+            return maxScore[0], players[maxScore[1]]
             
 class WarPlayer(Player):
     def playCard(self):
