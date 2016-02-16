@@ -104,14 +104,20 @@ class GoFishPlayer(Player):
         return allFours
             
 class HumanGoFishPlayer(GoFishPlayer):
-    def chooseCard(self):
+    def chooseCardAndPlayer(self, players):
         self.sortHand()
         print "Choose a card to ask about. You have: "
         self.printHand()
         num = 0
         while(not any(card.number == num for card in self.hand)):
             num = int(raw_input("Enter card number: "))
-        return num
+        print "Choose a player to ask. The players are: "
+        for index in range(len(players)):
+            print index, " ", players[index].name
+        index = -1
+        while(index < 0 or index >= len(players)):
+            index = int(raw_input("Enter player number: "))
+        return num, index
     
 class PredictionCardForGoFish:
     #Player Score:
@@ -325,20 +331,15 @@ class GoFishGame(Game):
             for player in self.players:
                 won = True
                 while won:
-                    number = player.chooseCard()
-                    #playerToAsk = player.choosePlayer(number)
-                    if len(self.players) == 2:
-                        playerToAsk = 0
-                        if self.players[0] == player:
-                            playerToAsk = 1
-                        print player.name, " asked ", self.players[playerToAsk].name, " got any ", number, "'s?"
-                        cards = self.players[playerToAsk].gotAny(number)
-                        if cards:
-                            print self.players[playerToAsk].name, ": Yup!"
-                            for card in cards:
-                                player.hand.append(card)
-                                player.hand.sort()
-                                #Check if we have four now
-                        else:
-                            print self.players[playerToAsk].name, ": Go Fish!"
-                            won = False
+                    number, playerToAsk = player.chooseCard()
+                    print player.name, " asked ", playerToAsk.name, ", \"got any ", number, "'s?\""
+                    cards = playerToAsk.gotAny(number)
+                    if cards:
+                        print playerToAsk.name, ": Yup!"
+                        for card in cards:
+                            player.hand.append(card)
+                            player.hand.sort()
+                            #Check if we have four now
+                    else:
+                        print playerToAsk.name, ": Go Fish!"
+                        won = False
