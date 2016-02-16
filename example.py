@@ -343,6 +343,9 @@ class GoFishGame(Game):
                             #Check if we have four now
                     else:
                         print self.players[playerToAsk].name, ": Go Fish!"
+                        newCard = self.deck.takeTopCard()
+                        player.hand.append(newCard)
+                        print player.name, "picked up a", newCard.number, "of", newCard.suit
                         won = False
 
 #Test!
