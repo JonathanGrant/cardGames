@@ -362,10 +362,13 @@ class GoFishGame(Game):
                             self.checkAllPlayersForBooks()
                     else:
                         print self.players[playerToAsk].name, ": Go Fish!"
-                        newCard = self.deck.takeTopCard()
-                        player.hand.append(newCard)
-                        print player.name, "picked up a", newCard.number, "of", newCard.suit
-                        self.checkAllPlayersForBooks()
+                        if len(self.deck) > 0:
+                            newCard = self.deck.takeTopCard()
+                            player.hand.append(newCard)
+                            print player.name, "picked up a", newCard.number, "of", newCard.suit
+                            self.checkAllPlayersForBooks()
+                        else:
+                            print "But there are no cards left!"
                         won = False
                     if player.outOfCards():
                         print player.name, "is out of cards!"
@@ -381,5 +384,7 @@ class GoFishGame(Game):
 #Create 2 human players only
 playerOne = HumanGoFishPlayer("Skywalker", [])
 playerTwo = RobotGoFishPlayer("Obi-Wan", [], True)
-game = GoFishGame([playerOne, playerTwo])
+playerThree = RobotGoFishPlayer("Yoda", [], True)
+playerFour = RobotGoFishPlayer("Dooku", [], True)
+game = GoFishGame([playerOne, playerTwo, playerThree, playerFour])
 game.runGame(True)
