@@ -174,7 +174,12 @@ class RobotGoFishPlayer(GoFishPlayer):
         
     @classmethod
     def bookFinished(cls, number):
-        cls.predictionCards.remove[number - 2]
+        toRemove = None
+        for card in cls.predictionCards:
+            if card.number == number:
+                toRemove = card
+        if toRemove:
+            cls.predictionCards.remove(toRemove)
         
     def chooseCardAndPlayer(self, players):
         if self.isEasy:
@@ -338,7 +343,7 @@ class GoFishGame(Game):
                 player.points += len(fours)
                 print player.name, "has", len(fours), "books, and has placed them down on the table."
                 for four in fours:
-                    RobotGoFishPlayer.bookFinished(four.number)
+                    RobotGoFishPlayer.bookFinished(four[0].number)
 
     def gameOver(self):
         print "Game Over!"
@@ -419,7 +424,8 @@ class GoFishGame(Game):
 
 #Test!
 #Create 2 human players only
-playerOne = HumanGoFishPlayer("Skywalker", [])
+playerOne = RobotGoFishPlayer("Skywalker", [], False)
 playerTwo = RobotGoFishPlayer("Obi-Wan", [], False)
-game = GoFishGame([playerOne, playerTwo])
+playerThree = RobotGoFishPlayer("Yoda", [], False)
+game = GoFishGame([playerOne, playerTwo, playerThree])
 game.runGame(True)
