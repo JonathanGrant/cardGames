@@ -167,13 +167,14 @@ class RobotGoFishPlayer(GoFishPlayer):
         self.points = 0
         
     #This method will be called after every single turn
-    def cardWasAskedFor(self, number, askingPlayerIndex, askedPlayerIndex, playerGaveCount, completedSetFlag):
-        if completedSetFlag:
-            #Remove card number from predictionCards
-            self.predictionCards.remove[number - 2]
-        else:
-            self.predictionCards[number - 2].setPlayerScore(askingPlayerIndex, playerGaveCount + self.getPlayerScore(askingPlayerIndex))
-            self.predictionCards[number - 2].setPlayerScore(askedPlayerIndex, 0)
+    @classmethod
+    def cardWasAskedFor(cls, number, askingPlayerIndex, askedPlayerIndex, playerGaveCount):
+        cls.predictionCards[number - 2].setPlayerScore(askingPlayerIndex, playerGaveCount + cls.predictionCards[number - 2].getPlayerScore(askingPlayerIndex))
+        cls.predictionCards[number - 2].setPlayerScore(askedPlayerIndex, 0)
+        
+    @classmethod
+    def bookFinished(cls, number):
+        cls.predictionCards.remove[number - 2]
         
     def chooseCardAndPlayer(self, players):
         if self.isEasy:
@@ -336,6 +337,8 @@ class GoFishGame(Game):
                 self.books.append(fours) #it might not be append but the other command I can't remember right now
                 player.points += len(fours)
                 print player.name, "has", len(fours), "books, and has placed them down on the table."
+                for four in fours:
+                    RobotGoFishPlayer.bookFinished(four.number)
 
     def gameOver(self):
         print "Game Over!"
@@ -388,6 +391,7 @@ class GoFishGame(Game):
                     number, playerToAsk = player.chooseCardAndPlayer(self.players)
                     print player.name, " asked ", self.players[playerToAsk].name, "got any ", number, "'s?"
                     cards = self.players[playerToAsk].giveAllCardsWithNumber(number)
+                    RobotGoFishPlayer.cardWasAskedFor(number, self.players.index(player), playerToAsk, len(cards))
                     if cards:
                         print self.players[playerToAsk].name, ": Yup!"
                         print self.players[playerToAsk].name, "gave", player.name, len(cards), number, "'s"
