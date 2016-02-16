@@ -62,6 +62,7 @@ class Player:
     def __init__(self, name, hand):
         self.hand = hand
         self.name = name
+        self.points = 0
     
     def printName(self):
         print self.name
@@ -162,6 +163,7 @@ class RobotGoFishPlayer(GoFishPlayer):
         self.name = name
         self.hand = hand
         self.isEasy = isEasy
+        self.points = 0
         
     #This method will be called after every single turn
     def cardWasAskedFor(self, number, askingPlayerIndex, askedPlayerIndex, playerGaveCount, completedSetFlag):
@@ -320,7 +322,7 @@ class GoFishGame(Game):
     def isGameOver(self, playTilEnd):
         for player in self.players:
             if not player.hand:
-                self.winners.append(player)
+                #Give the player more cards
                 if not playTilEnd:
                     return True
         if playTilEnd and len(self.players) == 1:
@@ -332,6 +334,7 @@ class GoFishGame(Game):
             fours = player.gimmeAllFours()
             if len(fours) > 0:
                 self.books.append(fours) #it might not be append but the other command I can't remember right now
+                player.points += len(fours)
                 print player.name, "has", len(fours), "books, and has placed them down on the table."
                 
     def runGame(self, playTilEnd):
@@ -354,7 +357,7 @@ class GoFishGame(Game):
                         print self.players[playerToAsk].name, "gave", player.name, len(cards), number, "'s"
                         for card in cards:
                             player.hand.append(card)
-                            player.hand.sort()
+                            player.sortHand()
                             #Check if we have four now
                             self.checkAllPlayersForBooks()
                     else:
@@ -368,9 +371,11 @@ class GoFishGame(Game):
                         print player.name, "is out of cards!"
                         self.players.remove(player)
         print "Game Over!"
-        print "The winners are: "
-        for i in range(len(self.winners)):
-            print i+1, self.winners[i].name
+        #Print out the players names and their points in order
+        self.players.sort(key=operator.attrgetter('points'))
+        
+        for player in range(1, len(self.players)):
+            print player, " ", self.players[player].name, "has", self.players[player].points, "points"
 
 #Test!
 #Create 2 human players only
