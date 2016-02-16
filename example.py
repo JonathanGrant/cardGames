@@ -342,7 +342,7 @@ class GoFishGame(Game):
         #Print out the players names and their points in order
         self.players.sort(key=operator.attrgetter('points'), reverse=True)
         for player in range(0, len(self.players)):
-            print player, " ", self.players[player].name, "has", self.players[player].points, "points"
+            print player+1, " ", self.players[player].name, "has", self.players[player].points, "points"
                 
     def outOfCardsCheck(self):
         for player in self.players:
