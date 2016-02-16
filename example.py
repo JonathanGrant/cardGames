@@ -362,7 +362,7 @@ class GoFishGame(Game):
                             self.checkAllPlayersForBooks()
                     else:
                         print self.players[playerToAsk].name, ": Go Fish!"
-                        if len(self.deck) > 0:
+                        if not self.deck.isEmpty():
                             newCard = self.deck.takeTopCard()
                             player.hand.append(newCard)
                             print player.name, "picked up a", newCard.number, "of", newCard.suit
