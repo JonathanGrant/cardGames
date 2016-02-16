@@ -325,7 +325,7 @@ class GoFishGame(Game):
                 #Give the player more cards
                 if not playTilEnd:
                     return True
-        if playTilEnd and len(self.players) == 1:
+        if playTilEnd and len(self.players) == len(self.donePlayers):
             return True
         return False
     
@@ -336,6 +336,34 @@ class GoFishGame(Game):
                 self.books.append(fours) #it might not be append but the other command I can't remember right now
                 player.points += len(fours)
                 print player.name, "has", len(fours), "books, and has placed them down on the table."
+
+    def gameOver(self):
+        print "Game Over!"
+        #Print out the players names and their points in order
+        self.players.sort(key=operator.attrgetter('points'))
+        for player in range(1, len(self.players)):
+            print player, " ", self.players[player].name, "has", self.players[player].points, "points"
+                
+    def outOfCardsCheck(self):
+        for player in self.players:
+            if player in self.donePlayers:
+                pass
+            if player.outOfCards():
+                print player.name, "is out of cards!"
+                if self.deck.isEmpty():
+                    self.donePlayers.append(player)
+                else:
+                    #Give players up to five more cards
+                    num = 0
+                    for num in range(0,5):
+                        if not self.deck.isEmpty():
+                            newCard = self.deck.takeTopCard()
+                            player.hand.append(newCard)
+                        else:
+                            break
+                    print player.name, "picked up", num, "cards."
+        if len(self.players) == len(self.donePlayers):
+            self.gameOver()
                 
     def runGame(self, playTilEnd):
         self.winners = []
@@ -345,13 +373,16 @@ class GoFishGame(Game):
         print "Cards are dealt"
         print "Starting Game"
         #Add check for fours right before game starts
+        self.donePlayers = []
         while(not self.isGameOver(playTilEnd)):
-            playersToRemove = []
             for player in self.players:
-                if player in playersToRemove:
+                self.outOfCardsCheck()
+                if player in self.donePlayers:
                     pass
                 won = True
                 while won and not self.isGameOver(playTilEnd):
+                    if player in self.donePlayers:
+                        break
                     number, playerToAsk = player.chooseCardAndPlayer(self.players)
                     print player.name, " asked ", self.players[playerToAsk].name, "got any ", number, "'s?"
                     cards = self.players[playerToAsk].giveAllCardsWithNumber(number)
@@ -373,31 +404,8 @@ class GoFishGame(Game):
                         else:
                             print "But there are no cards left!"
                         won = False
-                    if player.outOfCards():
-                        print player.name, "is out of cards!"
-                        if self.deck.isEmpty():
-                            playersToRemove.append(player)
-                        else:
-                            #Give players up to five more cards
-                            num = 0
-                            for num in range(0,5):
-                                if not self.deck.isEmpty():
-                                    newCard = self.deck.takeTopCard()
-                                    player.hand.append(newCard)
-                                else:
-                                    break
-                            print player.name, "picked up", num, "cards."
-            for player in playersToRemove:
-                print player, self.players, playersToRemove
-                self.players.remove(player)
-                
-                
-        print "Game Over!"
-        #Print out the players names and their points in order
-        self.players.sort(key=operator.attrgetter('points'))
-        
-        for player in range(1, len(self.players)):
-            print player, " ", self.players[player].name, "has", self.players[player].points, "points"
+                    self.outOfCardsCheck()
+            self.gameOver()
 
 #Test!
 #Create 2 human players only
