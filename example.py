@@ -346,7 +346,10 @@ class GoFishGame(Game):
         print "Starting Game"
         #Add check for fours right before game starts
         while(not self.isGameOver(playTilEnd)):
+            playersToRemove = []
             for player in self.players:
+                if player in playersToRemove:
+                    pass
                 won = True
                 while won and not self.isGameOver(playTilEnd):
                     number, playerToAsk = player.chooseCardAndPlayer(self.players)
@@ -372,7 +375,22 @@ class GoFishGame(Game):
                         won = False
                     if player.outOfCards():
                         print player.name, "is out of cards!"
-                        self.players.remove(player)
+                        if self.deck.isEmpty():
+                            playersToRemove.append(player)
+                        else:
+                            #Give players up to five more cards
+                            num = 0
+                            for num in range(0,5):
+                                if not self.deck.isEmpty():
+                                    newCard = self.deck.takeTopCard()
+                                    player.hand.append(newCard)
+                                else:
+                                    break
+                            print player.name, "picked up", num, "cards."
+            for player in playersToRemove:
+                self.players.remove(player)
+                
+                
         print "Game Over!"
         #Print out the players names and their points in order
         self.players.sort(key=operator.attrgetter('points'))
