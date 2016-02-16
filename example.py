@@ -106,7 +106,7 @@ class GoFishPlayer(Player):
 class HumanGoFishPlayer(GoFishPlayer):
     def chooseCardAndPlayer(self, players):
         self.sortHand()
-        print "Choose a card to ask about. You have: "
+        print self.name, ", choose a card to ask about. You have: "
         self.printHand()
         num = 0
         while(not any(card.number == num for card in self.hand)):
@@ -331,15 +331,23 @@ class GoFishGame(Game):
             for player in self.players:
                 won = True
                 while won:
-                    number, playerToAsk = player.chooseCard()
-                    print player.name, " asked ", playerToAsk.name, ", \"got any ", number, "'s?\""
-                    cards = playerToAsk.gotAny(number)
+                    number, playerToAsk = player.chooseCardAndPlayer(self.players)
+                    print player.name, " asked ", self.players[playerToAsk].name, "got any ", number, "'s?"
+                    cards = self.players[playerToAsk].giveAllCardsWithNumber(number)
                     if cards:
-                        print playerToAsk.name, ": Yup!"
+                        print self.players[playerToAsk].name, ": Yup!"
+                        print self.players[playerToAsk].name, "gave", player.name, len(cards), number, "'s"
                         for card in cards:
                             player.hand.append(card)
                             player.hand.sort()
                             #Check if we have four now
                     else:
-                        print playerToAsk.name, ": Go Fish!"
+                        print self.players[playerToAsk].name, ": Go Fish!"
                         won = False
+
+#Test!
+#Create 2 human players only
+playerOne = HumanGoFishPlayer("Skywalker", [])
+playerTwo = HumanGoFishPlayer("Obi-Wan", [])
+game = GoFishGame([playerOne, playerTwo])
+game.runGame(True)
