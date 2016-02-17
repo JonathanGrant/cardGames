@@ -157,7 +157,7 @@ class RobotGoFishPlayer(GoFishPlayer):
     #Must be called once before playable AI
     @classmethod
     def createPredictionCards(cls, players):
-        for num in range(1,A):
+        for num in range(2,A+1):
             cls.predictionCards.append(PredictionCardForGoFish(num, players))
     
     def __init__(self, name, hand, isEasy):
