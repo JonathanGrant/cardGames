@@ -169,8 +169,17 @@ class RobotGoFishPlayer(GoFishPlayer):
     #This method will be called after every single turn
     @classmethod
     def cardWasAskedFor(cls, number, askingPlayerIndex, askedPlayerIndex, playerGaveCount):
-        cls.predictionCards[number - 2].setPlayerScore(askingPlayerIndex, playerGaveCount + cls.predictionCards[number - 2].getPlayerScore(askingPlayerIndex))
-        cls.predictionCards[number - 2].setPlayerScore(askedPlayerIndex, 0)
+        theCard = None
+        for card in cls.predictionCards:
+            if card.number == number:
+                theCard = card
+        if theCard:
+            indexOfCard = cls.predictionCards.index(theCard)
+            if cls.predictionCards[indexOfCard].getPlayerScore(askingPlayerIndex) <= 1:
+                cls.predictionCards[indexOfCard].setPlayerScore(askingPlayerIndex, 2)
+            if playerGaveCount > 0:
+                cls.predictionCards[indexOfCard].setPlayerScore(askingPlayerIndex, playerGaveCount + cls.predictionCards[indexOfCard].getPlayerScore(askingPlayerIndex))
+            cls.predictionCards[indexOfCard].setPlayerScore(askedPlayerIndex, 1)
         
     @classmethod
     def bookFinished(cls, number):
