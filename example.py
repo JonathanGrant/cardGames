@@ -394,7 +394,7 @@ class GoFishGame(Game):
         RobotGoFishPlayer.createPredictionCards(self.players)
         while(not self.isGameOver(playTilEnd)):
             for player in self.players:
-                print self.donePlayers, " Done players"
+                #print self.donePlayers, " Done players"
                 self.outOfCardsCheck()
                 if player in self.donePlayers:
                     pass
@@ -434,7 +434,13 @@ class GoFishGame(Game):
 #Test!
 #Create 2 human players only
 playerOne = RobotGoFishPlayer("Skywalker", [], False)
-playerTwo = RobotGoFishPlayer("Obi-Wan", [], False)
+playerTwo = RobotGoFishPlayer("Padme", [], False)
 playerThree = RobotGoFishPlayer("Yoda", [], False)
-game = GoFishGame([playerOne, playerTwo, playerThree])
+playerFour = RobotGoFishPlayer("Leia", [], True)
+game = GoFishGame([playerOne, playerTwo, playerThree, playerFour])
 game.runGame(True)
+
+#playerOne = WarPlayer("Skywalker", [])
+#playerTwo = WarPlayer("Kenobi", [])
+#game = WarGame([playerOne,playerTwo])
+#game.runGame(True)
