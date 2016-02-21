@@ -434,13 +434,15 @@ class GoFishGame(Game):
 #Test!
 #Create 2 human players only
 playerOne = RobotGoFishPlayer("Skywalker", [], False)
-playerTwo = RobotGoFishPlayer("Padme", [], False)
-playerThree = RobotGoFishPlayer("Yoda", [], False)
-playerFour = RobotGoFishPlayer("Leia", [], True)
+playerTwo = HumanGoFishPlayer("Padme", [])
+playerThree = HumanGoFishPlayer("Yoda", [])
+playerFour = HumanGoFishPlayer("Rey", [])
 game = GoFishGame([playerOne, playerTwo, playerThree, playerFour])
 game.runGame(True)
-
+#
 #playerOne = WarPlayer("Skywalker", [])
 #playerTwo = WarPlayer("Kenobi", [])
-#game = WarGame([playerOne,playerTwo])
-#game.runGame(True)
+#playerThree = WarPlayer("Padme", [])
+#playerFour = WarPlayer("Rey", [])
+#game = WarGame([playerOne,playerTwo,playerThree, playerFour])
+#game.runGame(True, True)
