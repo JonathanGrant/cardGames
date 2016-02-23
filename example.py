@@ -59,9 +59,10 @@ class Deck:
         return len(self.cards)
 
 class Player:
-    def __init__(self, name, hand):
+    def __init__(self, name, hand, idNumber):
         self.hand = hand
         self.name = name
+        self.idNumber = idNumber
         self.points = 0
     
     def printName(self):
@@ -160,9 +161,10 @@ class RobotGoFishPlayer(GoFishPlayer):
         for num in range(2,A+1):
             cls.predictionCards.append(PredictionCardForGoFish(num, players))
     
-    def __init__(self, name, hand, isEasy):
+    def __init__(self, name, hand, idNumber, isEasy):
         self.name = name
         self.hand = hand
+        self.idNumber = idNumber
         self.isEasy = isEasy
         self.points = 0
         
@@ -364,7 +366,7 @@ class GoFishGame(Game):
     def outOfCardsCheck(self):
         for player in self.players:
             if player in self.donePlayers:
-                pass
+                continue
             if player.outOfCards():
                 print player.name, "is out of cards!"
                 if self.deck.isEmpty():
@@ -379,7 +381,7 @@ class GoFishGame(Game):
                         else:
                             break
                     print player.name, "picked up", num, "cards."
-        if len(self.players) == len(self.donePlayers):
+        if set(self.players) < set(self.donePlayers):
             self.gameOver()
                 
     def runGame(self, playTilEnd):
@@ -394,9 +396,8 @@ class GoFishGame(Game):
         RobotGoFishPlayer.createPredictionCards(self.players)
         while(not self.isGameOver(playTilEnd)):
             for player in self.players:
-                #print self.donePlayers, " Done players"
                 self.outOfCardsCheck()
-                if player in self.donePlayers:
+                if player.idNumber in self.donePlayers:
                     pass
                 won = True
                 while won and not self.isGameOver(playTilEnd):
@@ -425,24 +426,24 @@ class GoFishGame(Game):
                             print "But there are no cards left!"
                         won = False
                     self.outOfCardsCheck()
-                if len(self.players) == len(self.donePlayers):
+                if set(self.players) < set(self.donePlayers):
                     break
-            if len(self.players) == len(self.donePlayers):
+            if set(self.players) < set(self.donePlayers):
                 break
         self.gameOver()
 
 #Test!
 #Create 2 human players only
-playerOne = RobotGoFishPlayer("Skywalker", [], False)
-playerTwo = HumanGoFishPlayer("Padme", [])
-playerThree = HumanGoFishPlayer("Yoda", [])
-playerFour = HumanGoFishPlayer("Rey", [])
+playerOne = RobotGoFishPlayer("Skywalker", [], 0, False)
+playerTwo = RobotGoFishPlayer("Padme", [], 1, False)
+playerThree = RobotGoFishPlayer("Yoda", [], 2, True)
+playerFour = RobotGoFishPlayer("Rey", [], 3, True)
 game = GoFishGame([playerOne, playerTwo, playerThree, playerFour])
 game.runGame(True)
 #
-#playerOne = WarPlayer("Skywalker", [])
-#playerTwo = WarPlayer("Kenobi", [])
-#playerThree = WarPlayer("Padme", [])
-#playerFour = WarPlayer("Rey", [])
+#playerOne = WarPlayer("Skywalker", [], 0)
+#playerTwo = WarPlayer("Kenobi", [], 1)
+#playerThree = WarPlayer("Padme", [], 2)
+#playerFour = HumanWarPlayer("Rey", [], 3)
 #game = WarGame([playerOne,playerTwo,playerThree, playerFour])
 #game.runGame(True, True)
