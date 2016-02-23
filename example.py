@@ -83,6 +83,16 @@ class Player:
         
     def outOfCards(self):
         return not self.hand
+    
+class RobotGinRummyPlayer(Player):
+    def __init__(self, name, hand, idNumber):
+        self.name = name
+        self.hand = hand
+        self.idNumber = idNumber
+        
+    def handEvaluation(self):
+        #Insert gin rummy hand eval here
+        return 0
 
 class GoFishPlayer(Player):
     def giveAllCardsWithNumber(self, number):
@@ -442,12 +452,12 @@ class GoFishGame(Game):
 
 #Test!
 #Create 2 human players only
-playerOne = RobotGoFishPlayer("Skywalker", [], 0, False)
-playerTwo = RobotGoFishPlayer("Padme", [], 1, False)
-playerThree = RobotGoFishPlayer("Yoda", [], 2, True)
-playerFour = RobotGoFishPlayer("Rey", [], 3, True)
-game = GoFishGame([playerOne, playerTwo, playerThree, playerFour])
-game.runGame(True)
+#playerOne = RobotGoFishPlayer("Skywalker", [], 0, False)
+#playerTwo = RobotGoFishPlayer("Padme", [], 1, False)
+#playerThree = RobotGoFishPlayer("Yoda", [], 2, True)
+#playerFour = RobotGoFishPlayer("Rey", [], 3, True)
+#game = GoFishGame([playerOne, playerTwo, playerThree, playerFour])
+#game.runGame(True)
 #
 #playerOne = WarPlayer("Skywalker", [], 0)
 #playerTwo = WarPlayer("Kenobi", [], 1)
