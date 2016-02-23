@@ -191,6 +191,12 @@ class RobotGoFishPlayer(GoFishPlayer):
                 toRemove = card
         if toRemove:
             cls.predictionCards.remove(toRemove)
+            
+    @classmethod
+    def playerDrewCard(cls, playerIndex):
+        for card in cls.predictionCards:
+            if card.getPlayerScore(playerIndex) < 1:
+                card.setPlayerScore(playerIndex, 1)
         
     def chooseCardAndPlayer(self, players):
         if self.isEasy:
@@ -378,6 +384,7 @@ class GoFishGame(Game):
                         if not self.deck.isEmpty():
                             newCard = self.deck.takeTopCard()
                             player.hand.append(newCard)
+                            RobotGoFishPlayer.playerDrewCard(self.players.index(player))
                         else:
                             break
                     print player.name, "picked up", num, "cards."
@@ -421,6 +428,7 @@ class GoFishGame(Game):
                             newCard = self.deck.takeTopCard()
                             player.hand.append(newCard)
                             print player.name, "picked up a", newCard.number, "of", newCard.suit
+                            RobotGoFishPlayer.playerDrewCard(self.players.index(player))
                             self.checkAllPlayersForBooks()
                         else:
                             print "But there are no cards left!"
